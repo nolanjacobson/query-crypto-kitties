@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import HelloWorld from './components/HelloWorld'
+import QueryCryptoKitties from './components/QueryCryptoKitties'
 
 const App = () => {
-  return <HelloWorld />
+  return <QueryCryptoKitties />
 }
 
 export default App
