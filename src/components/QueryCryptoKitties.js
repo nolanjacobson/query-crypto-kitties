@@ -21,8 +21,10 @@ const QueryCryptoKitties = () => {
   // hook to display the mostRepeatedKitty on page
   const [mostRepeatedKittyId, setMostRepeatedKittyId] = useState(null)
   //
-  // hook to display the mostRepeatedKitty on page
+  // hook to display the mostRepeatedKittyOwner on page
   const [mostRepeatedKittyOwner, setMostRepeatedKittyOwner] = useState(null)
+  // hook to display the mostRepeatedKittyOwner on page
+  const [kittyDetails, setKittyDetails] = useState(null)
   // block indexes
   const startingFromBlock = 6607985
   const endingToBlock = 7028323
@@ -88,12 +90,32 @@ const QueryCryptoKitties = () => {
     setMostRepeatedKittyOwner(findMostRepeatedKittyOwner)
   }
 
+  const getKittyDetails = async () => {
+    const resp = await axios.get(
+      `https://public.api.cryptokitties.co/v1/kitties/${mostRepeatedKittyId}`,
+      {
+        headers: {
+          'x-api-token': 'ZG0Aj9y88MNovZotgZJOd3Ftt26UiBMj8EJefyU49us',
+        },
+      }
+    )
+    if (resp) {
+      console.log(resp)
+      setKittyDetails(resp.data)
+    }
+  }
+  // effect that listens for mostRepeatedKittyId to update
+  useEffect(() => {
+    if (mostRepeatedKittyId) {
+      getKittyDetails()
+    }
+  }, [mostRepeatedKittyId])
   useEffect(() => {
     // on page load, load the number of births
     getBirths()
   }, [])
 
-  // waiting to receive an API key from CryptoKitties to provide more specific details such as timestamp, generation, and genese of the kitty that give birth the most kitties!
+  // waiting to receive an API key from CryptoKitties to provide more specific details such as timestamp, generation, and genese of the kitty that give birth the most kitties! UPDATE: API Key granted
   return (
     <>
       <p>
@@ -108,6 +130,10 @@ const QueryCryptoKitties = () => {
       {mostRepeatedKittyId
         ? `Most Repeated Kitty Id: ${mostRepeatedKittyId}`
         : 'Loading most repeated kitty...'}
+      <br></br>
+      {kittyDetails
+        ? `Most Repeated Kitty Birthdate: ${kittyDetails.created_at}, Generation: ${kittyDetails.generation}, Name: ${kittyDetails.name} `
+        : 'Loading most repeated kitty details...'}
       <br></br>
       {mostRepeatedKittyOwner
         ? `Most Repeated Kitty Owner: ${mostRepeatedKittyOwner}`
